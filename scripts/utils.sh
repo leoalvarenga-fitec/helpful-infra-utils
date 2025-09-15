@@ -1,28 +1,61 @@
+CURSOR_IS_VISIBLE=true
+
 # Runs a command passed via args, directing its stdout to null (silencing it)
 run_silent() {
-    "$@" > /dev/null
+  if [[ $VERBOSE == "true" ]]; then
+    echo "Running -> $@"
+
+    "$@"
+    return
+  fi
+
+  "$@" > /dev/null 2>&1
 }
 
 # Wrapper to log something to stdout
 log() {
-    echo -e "$1"
+  echo -e "$1"
+}
+
+log_fatal() {
+  log "\x1b[1;31m[FATAL] $1\x1b[0m"
+  exit 1
+}
+
+log_warn() {
+  log "\x1b[1;33m[WARNING] $1\x1b[0m"
+}
+
+hide_cursor() {
+  CURSOR_IS_VISIBLE=false
+  log "\e[?25l"
+}
+
+show_cursor() {
+  CURSOR_IS_VISIBLE=true
+  log "\e[?25h"
 }
 
 toggle_cursor() {
-    log "\e[?25l"
+  if $CURSOR_IS_VISIBLE; then
+    hide_cursor
+    return
+  fi
+
+  show_cursor
 }
 
 clear_screen() {
-    log "\e[H"
-    log "\e[0J"
+  log "\e[H"
+  log "\e[0J"
 }
 
 has_output() {
-    if [ -n "$("$@" 2> /dev/null)" ]; then
-        return 0
-    fi
+  if [ -n "$("$@" 2> /dev/null)" ]; then
+      return 0
+  fi
 
-    return 1
+  return 1
 }
 
 progress_bar() {

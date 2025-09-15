@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
-install_basics() {
-	sudo apt-get update > /dev/null 2>&1
-	sudo apt-get upgrade -y > /dev/null 2>&1
+source "$(dirname "${BASH_SOURCE[0]}")/../../utils.sh"
 
-	sudo apt-get install -y curl  wget unzip jq gnupg software-properties-common > /dev/null 2>&1
+install_basics() {
+	run_silent apt-get update
+  run_silent apt-get upgrade -y
+
+  run_silent apt-get install -y curl lsb-base lsb-release wget unzip jq gnupg
 }
 
