@@ -4,11 +4,14 @@ set -eo pipefail
 
 # Source dependencies
 source "$(dirname "${BASH_SOURCE[0]}")/../utils.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/dependencies/basics.sh"
 source "$(dirname "${BASH_SOURCE[0]}")/dependencies/terraform.sh"
 source "$(dirname "${BASH_SOURCE[0]}")/dependencies/kubectl.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/dependencies/ssh.sh"
 
 # CRITICALLY IMPORTANT GLOBALS
 TASKS=() # Initialized as empty, will append commands as the precheck runs
+USER_EMAIL=""
 
 # Progress tracking
 TASKS_DONE=0
@@ -53,6 +56,8 @@ precheck() {
         exit 1
     fi
 
+    register_task "install_basics"
+
     # If terraform is not present in the admin local machine
     if has_output terraform -v; then
         register_task "install_terraform"
@@ -61,9 +66,13 @@ precheck() {
     if has_output kubectl version --client; then
         register_task "install_kubectl"    
     fi
+
+    register_task "setup_ssh_key"
 }
 
 # Main execution
+
+
 
 main() {
     toggle_cursor

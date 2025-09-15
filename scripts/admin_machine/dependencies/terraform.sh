@@ -2,7 +2,6 @@ install_terraform() {
     {
         # Install deps
         sudo apt-get update > /dev/null 2>&1 
-        sudo apt-get install -y gnupg > /dev/null 2>&1
 
         # Install HashiCorp's gpg key
         wget -qO- https://apt.releases.hashicorp.com/gpg | \
