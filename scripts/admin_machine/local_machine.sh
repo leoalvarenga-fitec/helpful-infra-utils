@@ -4,6 +4,7 @@ set -eo pipefail
 # Source dependencies
 source "$(dirname "${BASH_SOURCE[0]}")/../utils.sh"
 source "$(dirname "${BASH_SOURCE[0]}")/dependencies/basics.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/dependencies/docker.sh"
 source "$(dirname "${BASH_SOURCE[0]}")/dependencies/terraform.sh"
 source "$(dirname "${BASH_SOURCE[0]}")/dependencies/kubectl.sh"
 source "$(dirname "${BASH_SOURCE[0]}")/dependencies/ssh.sh"
@@ -51,22 +52,26 @@ display_progress() {
 precheck() {
   # Check if its running Debian
   if [[ -e /etc/debian_release ]]; then
-      log_fatal "This script only supports Debian currently..."
+    log_fatal "This script only supports Debian currently..."
   fi
 
   if [[ $(whoami) != "root" ]]; then
-      log_fatal "This script MUST be ran as ROOT. Use sudo, su, or other privilege escalation method to run it..."
+    log_fatal "This script MUST be ran as ROOT. Use sudo, su, or other privilege escalation method to run it..."
   fi
 
   register_task "install_basics"
 
+  if ! has_output docker --version; then
+     register_task "install_docker"
+  fi
+
   # If terraform is not present in the admin local machine
   if ! has_output terraform -v; then
-      register_task "install_terraform"
+    register_task "install_terraform"
   fi
 
   if ! has_output kubectl version --client; then
-      register_task "install_kubectl"    
+    register_task "install_kubectl"    
   fi
 
   register_task "setup_ssh_key"
@@ -81,17 +86,17 @@ main() {
   precheck
 
   if [ ${#TASKS[@]} -eq 0 ]; then
-      clear_screen
-      log "\e[1;32mNothing to do...\e[0m\n\n"
+    clear_screen
+    log "\e[1;32mNothing to do...\e[0m\n\n"
 
-      exit 0
+    exit 0
   fi
 
   for cmd in "${TASKS[@]}"; do
-      mark_as_in_progress
-      display_progress $cmd
+    mark_as_in_progress
+    display_progress $cmd
 
-      eval "$cmd"
+    eval "$cmd"
   done
 
   PROGRESS_MSG_PREFFIX="Finished"
