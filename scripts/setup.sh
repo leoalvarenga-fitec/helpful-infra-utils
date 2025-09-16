@@ -7,6 +7,8 @@ OPTION="$1"
 
 display_help() {
   clear_screen
+  reset
+
   log "\x1b[1;32mSETUP HELPER\x1b[0m"
 
   log "\nUSAGE"
@@ -14,14 +16,21 @@ display_help() {
 
   log "\nOPTIONS:"
   log "\t\"admin\" -> Start the setup on this machine to prepare it as an admin local machine able to provision environments"
+  log "\t\"server_dev\" -> Start the provisioning process for the DEV environment"
 
   log "\n\n"
 }
 
 setup_admin_local_machine() {
-  local entrypoint="$(dirname ${BASH_SOURCE[0]})/admin_machine/local_machine.sh"
+  local entrypoint="$(dirname ${BASH_SOURCE[0]})/local/setup.sh"
 
   impersonate_root $entrypoint $(whoami)
+}
+
+setup_server() {
+  local entrypoint="$(dirname ${BASH_SOURCE[0]})/server/setup.sh"
+
+  $entrypoint
 }
 
 main() {
@@ -30,9 +39,8 @@ main() {
       setup_admin_local_machine
     ;;
 
-    server)
-      log_warn "Not implemented yet...\n\n"
-      exit 1
+    server_dev)
+      setup_server
     ;;
 
     *)
