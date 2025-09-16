@@ -64,6 +64,8 @@ clear_screen() {
   log "\e[0J"
 }
 
+# Should be used as follow:
+#   VAR=$(PROMPT="My prompt" EXIT_IF_EMPTY="If this is preset, will exit if nothing is typed in" FAIL_MSG="Msg if fail" read_and_return)
 read_and_return() {
   local TEMP_VAR=""
 

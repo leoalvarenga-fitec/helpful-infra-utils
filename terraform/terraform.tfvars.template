@@ -1,0 +1,5 @@
+server_ip = "<some IP address>"
+server_port = 22 # My server's port open for ssh connections (22 by default)
+ssh_user  = "<my server user>"
+ssh_private_key = "/absolute/path/to/my/ssh/key"
+
