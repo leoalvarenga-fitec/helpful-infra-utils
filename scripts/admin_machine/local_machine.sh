@@ -12,6 +12,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/dependencies/ssh.sh"
 # CRITICALLY IMPORTANT GLOBALS
 TASKS=() # Initialized as empty, will append commands as the precheck runs
 USER_EMAIL=""
+ORIGINAL_USER="$1"
 
 # Progress tracking
 TASKS_DONE=0

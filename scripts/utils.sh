@@ -12,6 +12,20 @@ run_silent() {
   "$@" > /dev/null 2>&1
 }
 
+# Decides and executes privilege escalation
+impersonate_root() {
+  if has_output doas; then
+    doas "$@"
+    return
+  fi
+
+  sudo "$@"
+}
+
+run_func_as_root() {
+  impersonate_root "bash -c 'declare -f $1'; $1"
+}
+
 # Wrapper to log something to stdout
 log() {
   echo -e "$1"
@@ -50,9 +64,26 @@ clear_screen() {
   log "\e[0J"
 }
 
+read_and_return() {
+  local TEMP_VAR=""
+
+  if [[ -z $PROMPT ]]; then
+    read TEMP_VAR
+  else 
+    read -p "$PROMPT" TEMP_VAR
+  fi
+
+  if [[ ! -z $EXIT_IF_EMPTY && -z $TEMP_VAR ]]; then
+    log_fatal "$FAIL_MSG"
+    exit 1
+  fi
+
+  echo $TEMP_VAR
+}
+
 has_output() {
-  if [ -n "$("$@" 2> /dev/null)" ]; then
-      return 0
+  if command -v "$@" &> /dev/null; then
+    return 0
   fi
 
   return 1
