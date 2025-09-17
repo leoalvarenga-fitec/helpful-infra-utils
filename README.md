@@ -31,9 +31,9 @@ A set of opinionated utils to prepare an admin machine to setup a bare-metal ser
 
 ### Items
 - `scripts/utils.sh`: A set of generic utils used by most auxiliary scripts
-- `scripts/local/`: Where all scripts related to making sure the admin machine is ready to provision the Kubernetes cluster
-- `scripts/setup.sh`: Entrypoint for running the setup (currently, only supports the admin machine setup)
+- `scripts/local/`: Where all scripts related to making sure the admin machine is ready to provision the Kubernetes cluster are
+- `scripts/setup.sh`: Entrypoint for running the setup (currently, only supports the admin machine and the server DEV environment setup)
 - `scripts/server/transfer_ssh_key.sh`: Script used to transfer the Admins public SSH key to the target server host and user
 - `terraform/`: IaC powered by Terraform to provision the cluster
-- `terraform/terraform.tfvars.template`: Template file containing all required secrets to provision the cluster with Terraform
+- `terraform/dev/terraform.tfvars.template`: Template file containing all required secrets to provision the DEV environment cluster with Terraform
 
